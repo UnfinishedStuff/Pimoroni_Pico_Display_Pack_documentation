@@ -3,13 +3,13 @@
 
 Pimoroni have released a whole raft of accessories for the Raspberry Pi Pico, with the RP2040 chip at its heart.  Unfortunately, they seem to have released so many accessories that the documentation is currently a little scarce.  This doc contains a description of what I've been able to figure out for how to use the MicroPython module provided [by Pimoroni here](https://github.com/pimoroni/pimoroni-pico) for their Display Pack.
 
-Current state:  the functions are all documented, but it's getting late so complete examples will have to wait until later.
+Current state:  the functions are all documented in draft, but it's getting late so edting and complete examples will have to wait until later.
 
 # Setting up the board and development tools
 
 Before you can do anything, if you haven't already done so, you need to install the MicroPython firmware which contains Pimoroni's modules.  Follow [the instructions they have here](https://github.com/pimoroni/pimoroni-pico/blob/main/setting-up-micropython.md).  I've been using [Thonny IDE](https://thonny.org/) to work with the board, which is the IDE recommended by the Raspberry Pi Foundation.  Plug in the board, and after installing Pimoroni's firmware, open Thonny.  In the bottom right of the IDE it will probably say `Python` followed by a version number.  Click on that, and select `MicroPython (Raspberry Pi Pico)`.  Type code you want to run in the main window, and when complete click on the Save (floppy disk, or Ctrl-S on your keyboard) icon just below and right of the Edit option.  This should ask you whether you want to save the code on your PC or the Pico, so select the Pico.  The code won't run immediately:  you'll have to click the green run button (or press F5 on your keyboard) to start the program.
 
-# Setting up the display
+# Setting up the Display Pack
 
 Any time you use the Display Pack you'll need to use a bit of code to get the board ready for use.  
 
@@ -41,11 +41,11 @@ display_buffer = bytearray(width * height * 2)
 display.init(display_buffer)
 ```
 
-# Using the display: the RGB LED
+# Using the Display Pack: the RGB LED
 
 The RGB LED on the board is really straightforward to use.  Like most controllable RGB LEDs, it takes three values, each between 0 and 255.  The first controls the amount of red light, the second the green, and the last the blue.  The command for this is `display.set_led(red, green, blue)`, and the colour of the LED should change as soon as this command is run.  On a technical level the LED isn't a Neopixel, it is an analog LED with three different elements.  Each element is a different colour, and the strength of the colour is controlled by PWM.
 
-# Using the display: the buttons
+# Using the Display Pack: the buttons
 
 At the moment the only way to control the buttons seems to be to check if they're pressed individually.  If you're familiar with interrupts it seems you'll need to look into the base MicroPython documentation to do that, as they aren't catered for here.
 
@@ -62,7 +62,7 @@ while True:
 
 Bear in mind that this example is _not_ interrupt-driven, which means that if the button isn't pressed at the _exact_ time the code checks for it, nothing will happen and the code may miss the button press.  You'll need to constantly check to see if the button is pressed.  Once I've had more time to tinker with this I'll see if I can put together an interrupt-driven version.
 
-# Using the display: the display!
+# Using the Display Pack: the display!
 
 OK, so now to the part you probably bought the board for.  This part is going to be a bit more complex, but bear with me.
 
