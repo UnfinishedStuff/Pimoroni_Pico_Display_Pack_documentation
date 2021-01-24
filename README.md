@@ -162,14 +162,25 @@ You could use this to draw everything you want to do on the screen, changing col
     
 </details>
 
-## Draw individual pixels: `display.pixel(x,y)`
+## Setting whole-screen brightness: `display.set_backlight(brightness)`
+
+Sometimes you might want the whole screen to go through changes in intensity, and trying to do that at the pixel level could be difficult.  Alternatively, sometimes you just want the whole screen to be a bit dimmer, perhaps in a dark room.  The `display.set_backlight(brightness)` will do this, where `brightness` should be a value from 0 (backlight off completely) to 1 (backlight on full).  This change will take effect immediately.
+
+**Important note**: when the display is initialised the backlight seems to be turned off.  You'll likely need to set the backlight to a higher brightness before anything will be seen on the screen.  If you're pushing data but not seeing anything, check your backlight value.
+
+There's no example for setting the backlight value because you'll see absolutely nothing just by doing that, so see the next example.
+
+
+## Draw individual pixels: `display.pixel(x,y)` and `display.update()`
 
 Once you've set your pen colour you can begin drawing pixels.  The most simple way to do this is to set the colour of individual pixels.  This is done with the `display.pixel(x,y)` command.  The `x` and `y` values are coordinates, and describe where on the screen the pixel should be drawn, where the X axis is the long edge of the screen and the Y axis is the short edge.  The pixel will be drawn in the colour of the current pen.
 
+However, when you use the pen to draw, nothing will immediately happen on the screen.  That's because you're really drawing to the buffer we created earlier, but not sending that buffer to the screen.  To send the data in the buffer to the display you need to use the `display.update()` function.  This allows you to write more complex programs with many separate drawing instructions, without each individual step showing up on the screen: the final result will show on the screen only when you're ready for it to appear.
+
 <details>
-    <summary>This example shows how to set individual pixels.  Again, nothing will show on the screen until you use the display.update() function described below, but one step at a time!</summary>
+    <summary>This example shows how to set individual pixels and then push these to the screen, and is the first example where you should be able to see the results on the screen.</summary>
     
-    # An example of setting pen colours and creating pens
+    # An example of setting individual pixels and pushing them to the screen
 
     #Standard boilerplate code for using the Display Pack
     import picodisplay as display
@@ -178,30 +189,8 @@ Once you've set your pen colour you can begin drawing pixels.  The most simple w
     display_buffer = bytearray(width * height * 2)
     display.init(display_buffer)
 
-    # Use a red pen:
-    display.set_pen(255,0,0)
-
-    # And now we'll start setting pixels!
-    display.pixel(0,0)  # Draw one pixel at coordinate 0,0, the top left of the screen
-    display.pixel(5,5)  # Draw one pixel 5 pixels across, and 5 down
-    
-</details>
-
-## Pushing the data to the screen: `display.update()`
-
-When you use the pen to draw, nothing will immediately happen on the screen.  That's because you're really drawing to the buffer we created earlier, but not sending that buffer to the screen.  To send the data in the buffer to the display you need to use the `display.update()` function.  This allows you to write more complex programs with many separate drawing instructions, without each individual step showing up on the screen: the final result will show on the screen only when you're ready for it to appear.
-
-<details>
-    <summary>Finally! An example which will show something on the screen!  Even if it is just individual pixels but we'll make bigger changes in a moment...</summary>
-    
-    # An example of setting pen colours and creating pens
-
-    #Standard boilerplate code for using the Display Pack
-    import picodisplay as display
-    width = display.get_width()
-    height = display.get_height()
-    display_buffer = bytearray(width * height * 2)
-    display.init(display_buffer)
+    # Set the backlight to 50%
+    display.set_backlight(0.5)
 
     # Use a red pen:
     display.set_pen(255,0,0)
@@ -210,27 +199,130 @@ When you use the pen to draw, nothing will immediately happen on the screen.  Th
     display.pixel(0,0)  # Draw one pixel at coordinate 0,0, the top left of the screen
     display.pixel(5,5)  # Draw one pixel 5 pixels across, and 5 down
     
-    # Nothing happens until we run the update function:
+    # Push the dranw pixels to the screen:
     display.update()
-    # If you look really carefully, you should be able to see two *tiny* red dots in the upper left of the screen.
+    # You should now be able to see two tiny red dots on the display!
     
 </details>
 
 ## Filling the screen with a colour: `display.clear()`
 
-When you've spent plenty of time writing to the screen you may want to start over with a clean slate.  You can achieve this using the `display.clear()` function.  As the name implies, this can be used to clear the whole screen, but it actually sets the whole screen to the colour of the current pen.  That means it can also be used to set colourful backgrounds to draw other shapes on too.  Just bear in mind that, like other drawing actions, this won't appear on the screen until you use `display.update()`.
+When you've spent plenty of time writing to the screen you may want to start over with a clean slate.  You can achieve this using the `display.clear()` function.  As the name implies, this can be used to clear the whole screen, but it actually sets the whole screen to the colour of the current pen.  That means it can also be used to set colourful backgrounds to draw other shapes onto as well.  Just bear in mind that, like other drawing actions, this won't appear on the screen until you use `display.update()`.
+
+<details>
+    <summary>This example shows how you can set the entire screen to the colour of a pen</summary>
+    
+    #Standard boilerplate code for using the Display Pack
+    import picodisplay as display
+    width = display.get_width()
+    height = display.get_height()
+    display_buffer = bytearray(width * height * 2)
+    display.init(display_buffer)
+
+    # Set the backlight to 50%
+    display.set_backlight(0.5)
+
+    # Use a red pen:
+    display.set_pen(255,0,0)
+
+    # Set the whole screen to the current pen colour
+    display.clear()
+    
+    # Push the pixels to the screen:
+    display.update()
+    # The entire screen should now be red.
+    
+</details>
 
 ## Drawing more pixels in one go: `display.pixel_span(x,y,,)`
 
 Drawing individual pixels will quickly get tedious.  You can draw straight lines using the `display.pixel_span(x,y,l)` function.  `x` and `y` are the starting coordinates of the line, and `l` is the length of the line to draw, in pixels, using the current pen colour.  Unfortunately this only seems to work for horizontal lines at the moment: vertical lines will need to be done with the `display.set_pixel()` function.
 
+<details>
+    <summary>See how you can draw straight lines using this example</summary>
+    
+    #Standard boilerplate code for using the Display Pack
+    import picodisplay as display
+    width = display.get_width()
+    height = display.get_height()
+    display_buffer = bytearray(width * height * 2)
+    display.init(display_buffer)
+
+    # Set the backlight to 50%
+    display.set_backlight(0.5)
+
+    # Use a red pen:
+    display.set_pen(255,0,0)
+
+    # Draw a line starting 5 pixels down and 5 pixels from the edge, 100 pixels long
+    display.pixel_span(5,5,100)
+    
+    # Push the pixels to the screen:
+    display.update()
+    # You should now see a long, straight line on the screen
+    
+</details>
+
 ## Drawing MORE pixels in one go: `display.rectangle(x,y,w,h)`
 
 If you need to draw a rectangle (it works for squares too!) you can use the `display.rectangle(x,y,w,h)` function.  `x` and `y` are the coordinates of the top-left of the rectangle on the screen, `w` is the width of the screen in pixels, and `y` is the height.  The whole rectangle will be filled with the current pen colour.
 
+<details>
+    <summary>See how you can draw straight lines using this example</summary>
+    
+    #Standard boilerplate code for using the Display Pack
+    import picodisplay as display
+    width = display.get_width()
+    height = display.get_height()
+    display_buffer = bytearray(width * height * 2)
+    display.init(display_buffer)
+
+    # Set the backlight to 50%
+    display.set_backlight(0.5)
+
+    # Use a red pen:
+    display.set_pen(255,0,0)
+
+    # Draw a rectangle.  The top left corner should be 5 pixels from the top and 5 from the edge.
+    # The rectangle should be 100 pixels wide, and 100 tall.
+    display.rectangle(5,5,150,100)
+    
+    # Push the pixels to the screen:
+    display.update()
+    # You should now see a red rectangle on the screen
+    
+</details>
+
 ## Drawing MOAR pixels, but in a circle: `display.circle(x,y,r)`
 
-Circles can be a pain to do manually because you have to try to fit a round object into square pixels.  Thankfully, there is a function to figure out the best way to do this for you: `display.circle(x,y,r`.  In this case `x` and `y` are the coordinates of the centre of the circle, and `r` is the radius in pixels.  The whole circle will be filled in the current pen colour.
+Circles can be a pain to do manually because you have to try to fit a round object into square pixels.  Thankfully, there is a function to figure out the best way to do this for you: `display.circle(x,y,r)`.  In this case `x` and `y` are the coordinates of the centre of the circle, and `r` is the radius in pixels.  The whole circle will be filled in the current pen colour.
+
+<details>
+    <summary>Let's draw a circle in this example!</summary>
+    
+    #Standard boilerplate code for using the Display Pack
+    import picodisplay as display
+    width = display.get_width()
+    height = display.get_height()
+    display_buffer = bytearray(width * height * 2)
+    display.init(display_buffer)
+
+    # Set the backlight to 50%
+    display.set_backlight(0.5)
+
+    # Use a red pen:
+    display.set_pen(255,0,0)
+
+    # Draw a circle.  The centre of the circle should be 50 pixels down and 50 pixels from the edge.
+    # The radius of the circle will be 25 pixels
+    display.circle(50,50,25)
+    
+    # Push the pixels to the screen:
+    display.update()
+    # You should now see a red circle on the screen
+    
+</details>
+
 
 ## Drawing EVEN MOAR pixels, but as letters: `display.character(c, x, y)`
 
@@ -238,9 +330,104 @@ At some point you'll probably want to write some text on the screen, whether it 
 
 There's also an optional fourth parameter for this function, which is the _scale_ essentially the font size.  The default seems to be 2, which gives characters about 11 pixels tall, so at an absolute maximum you'll get 12 cramped rows of text.  A scale of 3 gives characters about 20 pixels tall/5 rows, and 4 is just under 30-pixel tall characters/ about 4 rows of text. 
 
+<details>
+    <summary>This example shows how to print individual characters on the screen.</summary>
+    
+    #Standard boilerplate code for using the Display Pack
+    import picodisplay as display
+    width = display.get_width()
+    height = display.get_height()
+    display_buffer = bytearray(width * height * 2)
+    display.init(display_buffer)
+
+    # Set the backlight to 50%
+    display.set_backlight(0.5)
+
+    # Use a red pen:
+    display.set_pen(255,0,0)
+
+    # Draw the character "A", 5 pixels from the top and 5 from the edge
+    display.character(65, 5,5)
+    # Do the same as above, but 15 pixels in and down, and in fontsize 4
+    display.character(65, 15,15,4)
+    
+    # Push the pixels to the screen:
+    display.update()
+    # You should now see two red "A"s on the screen. 
+    
+</details>
+
 ## Drawing strings of text: `display.text(string,x,y,w)`
 
 Drawing individual characters for words and sentences would rapidly get tedious, so the `display.text(stringx,y,w)` function will draw whole sentences for you.  `string` should be the string of text you want to display (e.g. `"Hello world!`), while `x` and `y` specify the upper left-hand corner of the text box.  `w` is the wrap value.  If you have multiple words separated by spaces, then the function will check the width of the text on the screen after each word is written.  If the width is greater than `w` pixels, then the next words will automatically be moved to the line below.  Note that this will not split up individual words, it will only move subsequent words to the next line.
+
+This function will also take an optional font size, see the "Drawing EVEN MOAR pixels, but as letters: `display.character(c, x, y)`" section above for an explanation.
+
+<details>
+    <summary>This example shows the classic "Hello world!" example on the display with different wrapping</summary>
+    
+    #Standard boilerplate code for using the Display Pack
+    import picodisplay as display
+    width = display.get_width()
+    height = display.get_height()
+    display_buffer = bytearray(width * height * 2)
+    display.init(display_buffer)
+
+    # Set the backlight to 50%
+    display.set_backlight(0.5)
+
+    # Use a red pen:
+    display.set_pen(255,0,0)
+
+    # Draw "Hello world!" on the screen 5 pixels in and down from the top left corner.
+    #The Wrap width of 200 is wider than the text, so the text won't wrap.
+    display.text("Hello world!", 5, 5, 200)
+    
+    
+    # Draw "Hello world!" on the screen 5 pixels in and 50 down from the top left corner.
+    #The Wrap width of 100 is narrower than the text, so the text will automatically
+    # wrap onto two lines
+    display.text("Hello world!", 5, 50, 100)
+    
+    # Push the pixels to the screen:
+    display.update()
+    # You should now see "Hello world!" on the screen with different wrapping. 
+    
+</details>
+
+
+<details>
+    <summary>This example shows the classic "Hello world!" example in different font sizes</summary>
+    
+    #Standard boilerplate code for using the Display Pack
+    import picodisplay as display
+    width = display.get_width()
+    height = display.get_height()
+    display_buffer = bytearray(width * height * 2)
+    display.init(display_buffer)
+
+    # Set the backlight to 50%
+    display.set_backlight(0.5)
+
+    # Use a red pen:
+    display.set_pen(255,0,0)
+
+    # Draw "Hello world!" on the screen 5 pixels in and down from the top left corner.
+    #The Wrap width of 240 is wider than the text, so the text won't wrap.  The font
+    # size is 1, which is tiny!
+    display.text("Hello world!", 5, 5, 240,1)
+    
+    
+    # Draw "Hello world!" on the screen 5 pixels in and 50 down from the top left corner.
+    #The Wrap width of 100 is narrower than the text, so the text won't wrap.  The font
+    # size is 4, which is much bigger
+    display.text("Hello world!", 5, 50, 240,4)
+    
+    # Push the pixels to the screen:
+    display.update()
+    # You should now see "Hello world!" on the screen in two different sizes. 
+    
+</details>
 
 ## Advanced drawing: `display.set_clip(x,y,h,w)` and `display.remove_clip()`
 
@@ -249,6 +436,3 @@ The functions above lay out some fairly basic drawing tools: setting individual 
 This diagram will hopefully explain what clips do a bit better:
 ![A diagram explaining clips](/clip.jpg)
 
-## Whole-screen brightness: `display.backlight(brightness)`
-
-Sometimes you might want the whole screen to go through changes in intensity, and trying to do that at the pixel level could be difficult.  Alternatively, sometimes you just want the whole screen to be a bit dimmer, perhaps in a dark room.  The `display.backlight(brightness)` will do this, where `brightness` should be a value from 0 (backlight off completely) to 1 (backlight on full).  This change will take effect immediately: there's no need to use the `display.update()` function.
