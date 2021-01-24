@@ -1,5 +1,7 @@
 # Pimoroni_Pico_Display_Pack_documentation
 
+![A Pico Display showing "Pimoroni display pack!"](/Display_pack.jpg)
+
 
 Pimoroni have released a whole raft of accessories for the Raspberry Pi Pico, with the RP2040 chip at its heart.  Unfortunately, they seem to have released so many accessories that the documentation is currently a bit behind.  This document contains a description of what I've been able to figure out for using the MicroPython module provided [by Pimoroni here](https://github.com/pimoroni/pimoroni-pico) for their Display Pack.
 
@@ -431,7 +433,7 @@ This function will also take an optional font size, see the "Drawing EVEN MOAR p
 
 ## Advanced drawing: `display.set_clip(x,y,h,w)` and `display.remove_clip()`
 
-The functions above lay out some fairly basic drawing tools: setting individual pixels, drawing filled rectangles, and drawing filled circles.  These can be used together to create more complex shapes, but they're "additive": you can draw a whole circle, but you can't draw half a circle.  To help create more complex objects you an use a _clip_.  This defines a part of the screen which can be drawn on, and anything outside this area cannot be drawn on.  Think of this as "masking off" parts of the screen with masking tape so that drawing on that area won't show up once the mask is removed.  The `display.set_clip(x,y,h,w)` function will create a rectangular clip with `x` and `y` specifying the upper left corner of the clip, and `w` and `h` defining the width and height of it.  Only drawing actions within this area will eventually appear on the screen: nothing will appear outside it.  When you're finised, use `display.remove_clip()` to remove the clip and enable drawing to any part of the screen again.
+The functions above lay out some fairly basic drawing tools: setting individual pixels, drawing filled rectangles, and drawing filled circles.  These can be used together to create more complex shapes, but they're "additive": you can draw a whole circle, but you can't draw half a circle.  To help create more complex objects you can use a _clip_.  This defines a part of the screen which can be drawn on, and anything outside this area cannot be drawn on.  Think of this as "masking off" parts of the screen with masking tape so that drawing on the masked area won't show up once the mask is removed.  The `display.set_clip(x,y,h,w)` function will create a rectangular clip with `x` and `y` specifying the upper left corner of the clip, and `w` and `h` defining the width and height of it.  Only drawing actions within this area will eventually appear on the screen: nothing will appear outside it.  When you're finised, use `display.remove_clip()` to remove the clip and enable drawing to any part of the screen again.
 
 This diagram will hopefully explain what clips do a bit better:
 ![A diagram explaining clips](/clip.jpg)
