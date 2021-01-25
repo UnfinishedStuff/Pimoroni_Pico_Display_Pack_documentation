@@ -5,31 +5,131 @@
 
 Pimoroni have released a whole raft of accessories for the Raspberry Pi Pico, with the RP2040 chip at its heart.  Unfortunately, they seem to have released so many accessories that the documentation is currently a bit behind.  This document contains a description of what I've been able to figure out for using the MicroPython module provided [by Pimoroni here](https://github.com/pimoroni/pimoroni-pico) for their Display Pack.
 
-Current state:  the functions are all documented in draft.  Examples are in down to drawing individual pixels, but I think I need to rethink documenting this on a per-function basis, and start with a more complete example of using the screen.  Also, the display examples probably need to start with setting the backlight.
+Current state:  The first draft is done, and some feedback has been recieved (thanks Gadgetoid and GlennHoran!).  Currently tested on pimoroni-pico v0.0.5 Alpha, all functions present and working.  Redrafting done down to the buttons (inclusive).
+
+# Quickstart script
+
+<details>
+    <summary>If you're reasonably comfortable with MicroPython then this example script lays everything out in brief.  It can be used directly on the Pico, and runs through every function in the module.</summary>
+    
+```python
+# Import the module for the Display board
+import picodisplay as display
+
+# INITIAL SETUP
+# Initialise the Display board.  This must be done for any features to work.
+# Get the width of the display, in pixels (240 pixels)
+width = display.get_width()
+# Get the height of the display, in pixels (135 pixels)
+height = display.get_height()
+
+# Use the above to create a buffer for the screen, 2 bytes per pixel
+# (it's a 16bit/RGB565 display, not RGB888)
+display_buffer = bytearray(width * height * 2)
+# Start the board!
+display.init(display_buffer)
+
+# SETTING THE LED
+# Set the RGB LED.  r,g,b = ints of 0-255.  Effective immediately.
+display.set_led(51, 153, 255) # A nice blue
+
+# CHECKING THE BUTTONS
+# Check button states. A,B,X,Y map to 0,1,2,3, or the constants BUTTON_A,
+# BUTTON_B, BUTTON_X, BUTTON_Y.  Note: not interrupt driven.
+if display.is_pressed(display.BUTTON_A):
+    print("Button A is pressed!")
+
+# USING THE SCREEN
+# The screen backlight starts at 0.  Must be 0.0-1.0.
+display.set_backlight(0.5)
+
+# All drawing actions are done with a pen which defines a colour
+display.set_pen(102, 255, 102) # A nice green
+
+# Create pen variables to avoid having to remember what shade the numbers are
+black = display.create_pen(0,0,0)
+white = display.create_pen(255,255,255)
+display.set_pen(black)
+
+# Set the entire screen to the current pen colour
+display.clear()
+
+# No draw commands take effect instantly: you need to push data to the screen
+display.update()
+
+# Draw one pixel in current pen colour.  Params are X and Y coords in pixels
+display.set_pen(white) # Remember to change your pen colours!
+display.pixel(1,1)
+display.update()
+
+# Draw a horizontal line in current pen colour. Params are starting X and Y
+# co-ordinates, and length of the line in pixels
+display.pixel_span(0,3,240)
+display.update()
+
+# Draw a rectangle.  Params are top-left X and Y co-ords, width and height.
+# Rectangle is filled with the current pen colour.
+display.rectangle(0,5,25,25)
+display.update()
+
+# Draw a circle.  Params are centre X and Y co-ords and radius in pixels.
+# The circle is filled with the current pen colour
+display.circle(15,45,15)
+display.update()
+
+# Draw individual characters.  First param is the ASCII number for the char.
+# Second and third are top/left X/Y coords.  Optional 4th param is font size,
+# defaults to 2/~11px tall/~12 rows, 3 = ~20px/ 5rows, 4 = ~30px/ 4rows 
+display.character(65, 0, 61)
+display.character(66, 15, 61, 4) # With font size
+display.update()
+
+# Draw a string. First param is the string, two and three are upper left X/Y
+# co-ords, four is wrapping: after each word is drawn, if the text is wider
+# than w pixels wide then the next word is moved to the line below.  Optional
+# param five is font size, see character function description.
+display.text("Hello world!", 0,100, 240,4)
+display.update()
+
+# Clips define a rectangle inside which things can be drawn.  Anything drawn
+# outside this area while the clip is present is not rendered.  Can be used to
+# e.g. slice objects in half.  First two params are X/Y co-ords of upper left,
+# next two are width and height.
+display.set_clip(125,15,50,50)
+display.circle(125,35,15) #Circle is on left hand clip border, so half removed
+display.remove_clip()
+display.update()
+```
+</details>
 
 # Setting up the board and development tools
 
 Before you can do anything, if you haven't already done so, you need to install the MicroPython firmware which contains Pimoroni's modules.  Follow [the instructions they have here](https://github.com/pimoroni/pimoroni-pico/blob/main/setting-up-micropython.md) to do this.  
 
-I've been using [Thonny IDE](https://thonny.org/) to work with the board, which is the IDE recommended by the Raspberry Pi Foundation.  Plug the board into your computer with a micro-USB cable, and after installing Pimoroni's firmware as above, open Thonny.  In the bottom right of the IDE it will probably say `Python` followed by a version number (e.g. `3.7.9`).  Click on that, and select `MicroPython (Raspberry Pi Pico)`.  If it asks you for a file name, I'd suggest calling it `main.py`.  Type code you want to run into the main window of Thonny, and when complete click on the Save icon just below and right of the Edit option (or use the keyboard shortcut, Ctrl-S).  This should ask you whether you want to save the code on `This computer` or the `Raspberry Pi Pico`, so select the Pico.  The code won't run immediately:  you'll have to click the green run button (or press F5 on your keyboard) to start the program.
+I've been using [Thonny IDE](https://thonny.org/) to work with the board, which is the IDE recommended by the Raspberry Pi Foundation.  Plug the board into your computer with a micro-USB cable, and after installing Pimoroni's firmware as above, open Thonny.  In the bottom right of the IDE it will probably say `Python` followed by a version number (e.g. `3.7.9`).  Click on that, and select `MicroPython (Raspberry Pi Pico)`.  Type the code you want to run into the main window of Thonny, and when complete click on the Save icon just below and right of the Edit option (or use the keyboard shortcut, Ctrl-S).  This should ask you whether you want to save the code on `This computer` or the `Raspberry Pi Pico`, so select the Pico. If it asks you for a file name, I'd suggest calling it `main.py`: this special file name means the script should run any time the board is powered on.  You can also start and stop the script using the green Run and red Stop button at the top of Thonny.
 
 # Setting up the Display Pack
 
-Any time you use the Display Pack you'll first need to use a bit of code to get the board ready for use.  While the board is called the Display pack it also has four buttons and an RGB LED, and you'll need to go through these initialisation steps even to use the LED or buttons.  
+Any time you use the Display Pack you'll first need to use a bit of code to get the board ready for use.  While the board is called the Display pack it also has four buttons and an RGB LED, and you'll need to go through these initialisation steps even to use the LED or buttons.  This takes a few steps, and the whole chunk of code which is required appears in one block at the bottom of this section
 
-First, you need to tell MicroPython to use the package of software which Pimoroni have created for the Display pack, using `import picodisplay as display`.  You _could_ just use `import picodisplay` but then every time you wanted to use a tool from this package you'd have to start the command with `picodisplay`.  By importing it `as display` you can start the command with `display` instead, which is a bit shorter, and that's what we'll be doing throughout the rest of this documentation.  If you really want to save yourself a few keystrokes, you could do something like `import picodisplay as pds` and then prefix every command with `pds`.
+### Importing the picodisplay module
 
-Next, we'll need to create a block of memory to hold the image the display will show.  This needs to be big enough to hold the whole image, so we need to know how big that is.  You could just look up the number of pixels in the screen on the product page and try to remember it, but the display can helpfully tell you how big it is. `width = display.get_width()` fetches the width of the screen in pixels and stores it in a variable called width, and `height = display.get_height()` predictably does the same for the height.  We need two bytes of memory for each of the pixels, so we create a `bytearray` to store the data `width * height * 2` in size and call that `display_buffer`:
+First, you need to tell MicroPython to use the package of software tools which Pimoroni have created for the Display Pack, using `import picodisplay as display`.  You _could_ just use `import picodisplay`, but then every time you wanted to use a tool from this package you'd have to start the command with `picodisplay`.  By importing it `as display` you can start the command with `display` instead, which is a bit shorter, and that's what we'll be doing throughout the rest of this documentation.  If you really want to save yourself a few keystrokes, you could do something like `import picodisplay as pds` and then prefix every command with `pds`.
 
-```
+### Creating a block of memory to act as a canvas to draw on: `display.get_width()` and `display.get_height()`
+
+Next, we need to create a block of memory to hold the image the display will show.  This needs to be big enough to hold the whole image, so we need to know how big that is.  You could just look up the number of pixels in the screen on the product page and try to remember it, but the display can helpfully tell you how big it is. Using `width = display.get_width()` fetches the width of the screen in pixels and stores it in a variable called width, and `height = display.get_height()` predictably does the same for the height.  We need two bytes of memory for each of the pixels, so we create a `bytearray` to store the data (which is `width * height * 2` in size) and call that `display_buffer`.  A `bytearray` is simply a more basic structure for storing data in than a Python list, which makes it more useful for certain types of hardware.
+
+```python
 width = display.get_width()
 height = display.get_height()
 display_buffer = bytearray(width * height * 2)
 ```
+### Starting the board with `display.init()`
 
-If you're not familiar with the `bytearray` instruction it's simply a more basic and simple structure for storing data in than a Python list, which makes it a bit more directly useful for certain types of hardware.  Finally, we finish our setup by initialising the board with the buffer for the pixels using `display.init(display_buffer)`.  That's all the setup done!  This whole block of setup code is below, and should be at the top of any program you write which uses the Display Pack.  Now we can get to the fun stuff.
+Finally, we finish our setup by initialising the board with the buffer for the pixels using `display.init(display_buffer)`.  That's all the setup done!  This whole block of setup code is below, and should be at the top of any program you write which uses the Display Pack.  Now we can get to the fun stuff.
 
-```
+```python
 # Boilerplate code which will be needed for any program using the Pimoroni Display Pack
 
 # Import the module containing the display code
@@ -48,47 +148,50 @@ display.init(display_buffer)
 ```
 
 # Using the Display Pack: the RGB LED
+### Creating colour with `display.set_led(red, green, blue)`
 
-The RGB LED on the board is really straightforward to use.  Like most controllable RGB LEDs, it takes three values, each between 0 and 255.  The first controls the amount of red light, the second the green, and the last the blue.  The command for this is `display.set_led(red, green, blue)`, and the colour of the LED should change as soon as this command is run.  On a technical level the LED isn't a Neopixel, it is an analog LED with three different elements.  Each element is a different colour, and the strength of the colour is controlled by Pulse Width Modulation (PWM), a system of toggling a pin on and off to signal an intensity.
+The RGB LED on the board is really straightforward to use.  Like most controllable RGB LEDs, it takes three values, each between 0 and 255.  The first controls the amount of red light, the second the green, and the last the blue, and you can blend these together to create a vast range of colours.  The command for this is `display.set_led(red, green, blue)`, and the colour of the LED should change as soon as this command is run.  On an electrical level the LED is an analog LED with three different elements.  Each element is a different colour, and the strength of the colour is controlled by Pulse Width Modulation (PWM), a system of toggling a pin on and off to signal an intensity.
 
 <details>
     <summary>Click here for a full example of using the LED.  This code can be used directly in Thonny.</summary>
     
-    # A complete example for using the LED
+```python    
+# A complete example for using the LED
 
-    # Import a module which will let us wait for a few seconds
-    import time
+# Import a module which will let us wait for a few seconds
+import time
 
-    #Standard boilerplate code for using the Display Pack
-    import picodisplay as display
-    width = display.get_width()
-    height = display.get_height()
-    display_buffer = bytearray(width * height * 2)
-    display.init(display_buffer)
+#Standard boilerplate code for using the Display Pack
+import picodisplay as display
+width = display.get_width()
+height = display.get_height()
+display_buffer = bytearray(width * height * 2)
+display.init(display_buffer)
 
-    # And now, lets cycle the LED through a few colours
-    display.set_led(255,0,0) # Set the LED to bright red
-    time.sleep(1) # Wait for 1 second
+# And now, lets cycle the LED through a few colours
+display.set_led(255,0,0) # Set the LED to bright red
+time.sleep(1) # Wait for 1 second
 
-    display.set_led(0,255,0) # Set the LED to bright green
-    time.sleep(1) # Wait for 1 second
+display.set_led(0,255,0) # Set the LED to bright green
+time.sleep(1) # Wait for 1 second
 
-    display.set_led(0,0,255) # Set the LED to bright blue
-    time.sleep(1) # Wait for 1 second
+display.set_led(0,0,255) # Set the LED to bright blue
+time.sleep(1) # Wait for 1 second
 
-    display.set_led(0,0,0) # Turn the LED off
-    
+display.set_led(0,0,0) # Turn the LED off
+```
 </details>
 
 # Using the Display Pack: the buttons
+### Checking to see if a button is pressed with `display.is_pressed()`
 
 At the moment the only way to control the buttons seems to be to check if they're pressed individually.  If you're familiar with interrupts it seems you'll need to look into the base MicroPython documentation to do that, as they aren't catered for here.
 
-To check if a button is pressed, use the `display.is_pressed(button)` function.  `button` should be a number.  The buttons on the board are labelled `A,B,X,Y` but in the software they're referred to as `1,2,3,4`.  This will then return `True` or `False` depending on whether or not the button is pressed.
+To check if a button is pressed, use the `display.is_pressed(button)` function;  `button` identifies which button to check.  The buttons on the board are labelled `A,B,X,Y` and you can use `display.BUTTON_A`, `display.BUTTON_B`, `display.BUTTON_X` and `display.BUTTON_Y` to tell the board which one to check (you _can_ refer to them as 0,1,2, and 3 for A,B,X and Y, but the pre-defined `BUTTON_` names are much more easy to remember and read back).  This will then return `True` or `False` depending on whether or not the button is pressed.
 
-```
+```python
 while True:
-    if display.is_pressed(0):
+    if display.is_pressed(display.BUTTON_A):
         print("Button A is pressed!")
     else:
         print("Button A isn't pressed...")
@@ -99,33 +202,35 @@ Bear in mind that this example is _not_ interrupt-driven, which means that if th
 
 <details>
     <summary>Click here for a full example of using the buttons.  This code can be used directly in Thonny.</summary>
+
+```python
+# A complete example for using the buttons
+
+# Import a module which will let us wait for a few seconds
+import time
+
+#Standard boilerplate code for using the Display Pack
+import picodisplay as display
+width = display.get_width()
+height = display.get_height()
+display_buffer = bytearray(width * height * 2)
+display.init(display_buffer)
+
+# And now, lets check each button one-by-one for presses, and print a message if it is pressed
     
-    # A complete example for using the buttons
-
-    # Import a module which will let us wait for a few seconds
-    import time
-
-    #Standard boilerplate code for using the Display Pack
-    import picodisplay as display
-    width = display.get_width()
-    height = display.get_height()
-    display_buffer = bytearray(width * height * 2)
-    display.init(display_buffer)
-
-    # And now, lets check each button one-by-one for presses, and print a message if it is pressed
-    
-    while True:                                 # Continuously loop through this code to check for button presses
-        if display.is_pressed(0):               # Check if the A button is pressed (this is button 0 in the software)
-            print("Button A is pressed!")           # If button A is pressed, print a message saying so!
-        elif display.is_pressed(1):             # Otherwise, check if the B button is pressed (button 1 in the software)
-            print("Button B is pressed!")           # If button B is pressed, print a message saying so!
-        elif display.is_pressed(2):             # Otherwise, check if the X button is pressed (button 2 in the software)
-            print("Button X is pressed!")           # If button X is pressed, print a message saying so!
-        elif display.is_pressed(3):             # Otherwise, check if the Y button is pressed (button 3 in the software)
-            print("Button Y is pressed!")           # If button Y is pressed, print a message saying so!
-        else:                                   # If none of the buttons are pressed..
-            print("No buttons are pressed...")      # Print a message saying that no buttons are pressed
-        time.sleep(0.2)                         # Wait a short time so that the messages don't scroll past too quickly.
+while True:                                     # Continuously check for button presses
+    if display.is_pressed(display.BUTTON_A):    # Check if the A button is pressed
+        print("Button A is pressed!")               # If button A is pressed, print a message saying so!
+    elif display.is_pressed(display.BUTTON_B):  # Otherwise, check if the B button is pressed
+        print("Button B is pressed!")               # If button B is pressed, print a message saying so!
+    elif display.is_pressed(display.BUTTON_X):  # Otherwise, check if the X button is pressed
+        print("Button X is pressed!")               # If button X is pressed, print a message saying so!
+    elif display.is_pressed(display.BUTTON_Y):  # Otherwise, check if the Y button is pressed
+        print("Button Y is pressed!")               # If button Y is pressed, print a message saying so!
+    else:                                       # If none of the buttons are pressed..
+        print("No buttons are pressed...")          # Print a message saying that no buttons are pressed
+    time.sleep(0.2)                             # Wait a moment so that the messages don't scroll by too quickly.
+```
 </details>
 
 # Using the Display Pack: the display!
