@@ -102,11 +102,26 @@ display.update()
 ```
 </details>
 
-# Setting up the board and development tools
+# Setting up the hardware and the development tools
 
-Before you can do anything, if you haven't already done so, you need to install the MicroPython firmware which contains Pimoroni's modules.  Follow [the instructions they have here](https://github.com/pimoroni/pimoroni-pico/blob/main/setting-up-micropython.md) to do this.  
+If you haven't done so already, you need to install Pimoroni's firmware file which combines MicroPython with the software modules for their hardware, and also set up a tool for writing code and sending that to the Pico board.
 
-I've been using [Thonny IDE](https://thonny.org/) to work with the board, which is the IDE recommended by the Raspberry Pi Foundation.  Plug the board into your computer with a micro-USB cable, and after installing Pimoroni's firmware as above, open Thonny.  In the bottom right of the IDE it will probably say `Python` followed by a version number (e.g. `3.7.9`).  Click on that, and select `MicroPython (Raspberry Pi Pico)`.  Type the code you want to run into the main window of Thonny, and when complete click on the Save icon just below and right of the Edit option (or use the keyboard shortcut, Ctrl-S).  This should ask you whether you want to save the code on `This computer` or the `Raspberry Pi Pico`, so select the Pico. If it asks you for a file name, I'd suggest calling it `main.py`: this special file name means the script should run any time the board is powered on.  You can also start and stop the script using the green Run and red Stop button at the top of Thonny.
+### Installing Pimoroni's software modules for the Pico
+
+To help you use their Pico accessory boards Pimoroni have written software modules with examples.  These are wrapped up with MicroPython into a custom firmware, which is quick and easy to install.  This step-by-step guide for installing that firmware relates to the Raspberry Pi Pico, if you're using a different board refer to the manufacturer's instructions for installing new firmwares.
+
+1. Download the latest build of `pimoroni-pico` from [Pimoroni's releases page](https://github.com/pimoroni/pimoroni-pico/releases).  You want the `.uf2` file from the latest release, which currently is called `pimoroni-pico-micropython.uf2`.
+1. Unplug the Raspberry Pi Pico from your PC.
+2. While _holding the BOOTSEL button down_, plug the Pico back into your computer.  The Pico should very quickly show up as an external storage drive called `RPI_RP2`.  You can let go of the button now.
+3. Copy the `.uf2` file over to the `RPI-RP2` drive.  A few seconds after the copying finishes the `RPI-RP2` drive should disappear, and the installation process is complete.
+
+### Setting up Thonny to program the Pico
+
+[Thonny](https://thonny.org/) is the IDE recommended by the Raspberry Pi Foundation.  This is a piece of software which runs on your PC and helps with writing code and sending it to the Pico.  
+
+After installing and opening Thonny, in the bottom right of the Thonny window it will will say `Python` followed by a version number (e.g. `3.7.9`).  Click on that, and select `MicroPython (Raspberry Pi Pico)`.  This tells Thonny which type of board you are going to work with.  Type the code you want to run into the main window of Thonny, and when complete click on the Save icon just below and right of the Edit option (or use the keyboard shortcut, Ctrl-S).  This should ask you whether you want to save the code on `This computer` or the `Raspberry Pi Pico`, so select the Pico. If it asks you for a file name, I'd suggest calling it `main.py`: this special file name means the script should run any time the board is powered on.  
+
+You can then start and stop the script using the green Run and red Stop button at the top of Thonny.
 
 # Setting up the Display Pack
 
