@@ -5,7 +5,7 @@
 
 Pimoroni have released a whole raft of accessories for the Raspberry Pi Pico, with the RP2040 chip at its heart.  Unfortunately, they seem to have released so many accessories that the documentation is currently a bit behind.  This document contains a description of what I've been able to figure out for using the MicroPython module provided [by Pimoroni here](https://github.com/pimoroni/pimoroni-pico) for their Display Pack.
 
-Current state:  The first draft is done, and some feedback has been recieved.  Thanks to Gadgetoid and GlennHoran for their suggestions.  This guide was written for and tested on `pimoroni-pico v0.0.5 Alpha`, all functions are present and working.
+Current state:  The first draft is done, and some feedback has been recieved.  Thanks to Gadgetoid, GlennHoran, and markmcgookin for their suggestions.  This guide was written for and tested on `pimoroni-pico v0.0.5 Alpha`, all functions are present and working at the time of writing.  The guide is also written on the assumption that you're using the Raspberry Pi Pico board, but should be applicable to other boards as well.
 
 # Quickstart script
 
@@ -102,6 +102,8 @@ display.update()
 ```
 </details>
 
+**Make sure you've installed Pimoroni's MicroPython firmware before writing code (see the `Installing Pimoroni's software modules for the Pico` section below)**
+
 # Setting up the hardware and the development tools
 
 If you haven't done so already, you need to install Pimoroni's firmware file which combines MicroPython with the software modules for their hardware, and also set up a tool for writing code and sending that to the Pico board.
@@ -110,7 +112,7 @@ If you haven't done so already, you need to install Pimoroni's firmware file whi
 
 To help you use their Pico accessory boards Pimoroni have written software modules with examples.  These are wrapped up with MicroPython into a custom firmware, which is quick and easy to install.  This step-by-step guide for installing that firmware relates to the Raspberry Pi Pico, if you're using a different board refer to the manufacturer's instructions for installing new firmwares.
 
-1. Download the latest build of `pimoroni-pico` from [Pimoroni's releases page](https://github.com/pimoroni/pimoroni-pico/releases).  You want the `.uf2` file from the latest release, which currently is called `pimoroni-pico-micropython.uf2`.
+1. Download the latest build of Pimoroni's Pico firmware from the Assets section of [the releases page](https://github.com/pimoroni/pimoroni-pico/releases).  You want the `.uf2` file from the latest release, which currently is called `pimoroni-pico-micropython.uf2`.
 1. Unplug the Raspberry Pi Pico from your PC.
 2. While _holding the BOOTSEL button down_, plug the Pico back into your computer.  The Pico should very quickly show up as an external storage drive called `RPI_RP2`.  You can let go of the button now.
 3. Copy the `.uf2` file over to the `RPI-RP2` drive.  A few seconds after the copying finishes the `RPI-RP2` drive should disappear, and the installation process is complete.
