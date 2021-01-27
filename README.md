@@ -7,6 +7,36 @@ Pimoroni have released a whole raft of accessories for the Raspberry Pi Pico, wi
 
 Current state:  The first draft is done, and some feedback has been recieved.  Thanks to Gadgetoid, GlennHoran, and markmcgookin for their suggestions.  This guide was written for and tested on `pimoroni-pico v0.0.5 Alpha`, all functions are present and working at the time of writing.  The guide is also written on the assumption that you're using the Raspberry Pi Pico board, but should be applicable to other boards as well.
 
+# Table of Contents
+
+- [Quickstart script](#quickstart-script)
+- [Setting up the hardware and development tools](#setting-up-the-hardware-and-the-development-tools)
+    - [Installing Pimoroni's software modules for the Pico](#installing-pimoronis-software-modules-for-the-pico)
+    - [Setting up Thonny to program the Pico](#setting-up-thonny-to-program-the-pico)
+- [Setting up the Display Pack](#setting-up-the-display-pack)
+    - [Importing the picodisplay module](#importing-the-picodisplay-module)
+    - [Creating a block of memory to act as a canvas to draw on: display.get_width() and display.get_height()](#creating-a-block-of-memory-to-act-as-a-canvas-to-draw-on-displayget_width-and-displayget_height)
+    - [Starting the board with display.init()](#starting-the-board-with-displayinit)
+- [Using the Display Pack: the RGB LED](#using-the-display-pack-the-rgb-led)
+    - [Creating colour with display.set_led(red, green, blue)](#creating-colour-with-displayset_ledred-green-blue)
+- [Using the Display Pack: the buttons](#using-the-display-pack-the-buttons)
+    - [Checking to see if a button is pressed with display.is_pressed()](#checking-to-see-if-a-button-is-pressed-with-displayis_pressed)
+- [Using the Display Pack: the display!](#using-the-display-pack-the-display)
+    - [Utility functions](#utility-functions)
+        - [Setting the backlight: display.set_backlight(brightness)](#setting-the-backlight-displayset_backlightbrightness)
+        - [Changing the colour of the pen: display.set_pen(r,g,b)](#changing-the-colour-of-the-pen-displayset_penrgb)
+        - [Making pen colours a bit more easy to remember: display.create_pen(r,g,b)](#making-pen-colours-a-bit-more-easy-to-remember-displaycreate_penrgb)
+        - [Pushing data to the screen: display.update()](#pushing-data-to-the-screen-displayupdate)
+    - [Drawing functions](#drawing-functions)
+        - [Draw individual pixels with display.pixel(x,y)](#draw-individual-pixels-with-displaypixelxy)
+        - [Filling the screen with a colour: display.clear()](#filling-the-screen-with-a-colour-displayclear)
+        - [Drawing more pixels in one go: horixontal lines with display.pixel_span(x,y,length)](#drawing-more-pixels-in-one-go-horixontal-lines-with-displaypixel_spanxylength)
+        - [Drawing MORE pixels in one go: display.rectangle(x,y,width,height)](#drawing-more-pixels-in-one-go-displayrectanglexywidthheight)
+        - [Drawing MOAR pixels, but in a circle: display.circle(x,y,radius)](#drawing-moar-pixels-but-in-a-circle-displaycirclexyradius)
+        - [Drawing EVEN MOAR pixels, but as letters: display.character(character, x, y)](#drawing-even-moar-pixels-but-as-letters-displaycharactercharacter-x-y)
+        - [Drawing strings of text: display.text(string,x,y,wrapping)](#drawing-strings-of-text-displaytextstringxywrapping)
+        - [Advanced drawing: display.set_clip(x,y,width,height) and display.remove_clip()](#advanced-drawing-displayset_clipxywidthheight-and-displayremove_clip)
+
 # Quickstart script
 
 <details>
