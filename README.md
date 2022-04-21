@@ -305,9 +305,9 @@ The way to think about using the Pico Display Pack is that you're drawing on the
 You could use `display.set_pen` to draw everything you want to do on the screen, changing colour as required.  If you're using a lot of different colours though it could get confusing to remember exactly _which_ shade of colour each combination of `red`, `green`, and `blue` values refers to, and so there's a shortcut for this.  The `display.create_pen(red,green,blue)` function is used for this, for example by using the line of code: `penName = display.create_pen(red,green,blue)`. In this example `penName` is the shortcut name for this colour, so the next time you need it you can use the command `display.set_pen(penName)` instead of trying to remember the exact `red`,`green`, and `blue` values for the colour you want.  This makes it much easier to switch between many pen colours.
 
 ```python
-darkBlue = display.create_pen(0, 0, 153)    # A dark blue
-deepBlue = display.create(0, 51, 204)       # A deeper blue
-paleBlue = display.create(51, 153, 255)     # A paler blue
+darkBlue = display.create_pen(0, 0, 153)        # A dark blue
+deepBlue = display.create_pen(0, 51, 204)       # A deeper blue
+paleBlue = display.create_pen(51, 153, 255)     # A paler blue
 
 # Quickly switch between pen colours
 display.set_pen(deepBlue)
