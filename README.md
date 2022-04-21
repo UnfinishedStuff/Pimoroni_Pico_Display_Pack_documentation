@@ -586,6 +586,40 @@ display.update()
 ````
 </details>
 
+### Flipping the screen: `display.flip()`
+
+This function will rotate everything on the screen 180º (upside down). The display will stay in that state until you call `display.flip()` again.
+
+<details>
+    <summary>This example displays the classic "Hello world!" example upside down</summary>
+
+```python
+    #Standard boilerplate code for using the Display Pack
+    import picodisplay as display
+    width = display.get_width()
+    height = display.get_height()
+    display_buffer = bytearray(width * height * 2)
+    display.init(display_buffer)
+
+    # Set the backlight to 50%
+    display.set_backlight(0.5)
+
+    # Use a red pen:
+    display.set_pen(255,0,0)
+
+    # Draw "Hello world!" on the screen 5 pixels in and down from the top left corner.
+    #The Wrap width of 200 is wider than the text, so the text won't wrap.
+    display.text("Hello world!", 5, 5, 200)
+    
+    # Flip the screen
+    display.flip()
+    
+    # Push the pixels to the screen:
+    display.update()
+    # You should now see "Hello world!" on the screen upside down (rotated 180º). 
+```
+</details>
+
 ### Advanced drawing: `display.set_clip(x,y,width,height)` and `display.remove_clip()`
 
 The functions above lay out some fairly basic drawing tools: setting individual pixels, drawing filled rectangles, and drawing filled circles.  These can be used together to create more complex shapes, but they're "additive": you can draw a whole circle, but you can't draw half a circle.  To help create more complex objects you can use a _clip_.  This defines a part of the screen which can be drawn on, and anything outside this area cannot be drawn on.  Think of this as "masking off" parts of the screen with masking tape so that anything drawn on the masked area won't show up once the mask is removed.  The `display.set_clip(x,y,width, height)` function will create a rectangular clip with `x` and `y` specifying the upper left corner of the clip, and `width` and `height` defining the width and height of it.  Only drawing actions within this area will eventually appear on the screen: nothing will appear outside it.  When you're finised, use `display.remove_clip()` to remove the clip and enable drawing to any part of the screen again.
