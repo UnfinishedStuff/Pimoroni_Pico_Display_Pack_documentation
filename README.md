@@ -5,7 +5,11 @@
 
 Pimoroni have released a whole raft of accessories for the Raspberry Pi Pico, with the RP2040 chip at its heart.  Unfortunately, they seem to have released so many accessories that the documentation is currently a bit behind.  This document contains a description of what I've been able to figure out for using the MicroPython module provided [by Pimoroni here](https://github.com/pimoroni/pimoroni-pico) for their Display Pack.
 
-Current state:  The first draft is done, and some feedback has been recieved.  Thanks to Gadgetoid, GlennHoran, and markmcgookin for their suggestions.  This guide was written for and tested on `pimoroni-pico v0.0.5 Alpha`, all functions are present and working at the time of writing.  The guide is also written on the assumption that you're using the Raspberry Pi Pico board, but should be applicable to other boards as well.
+Current state:  
+
+21-04-22:Unfortunately work and life have really gotten in the way of hobby things, so this repo is probably at least a year out of date. Maybe someday I'll get the time to update it, but no promises. I hope you find it useful anyway. 
+
+The first draft is done, and some feedback has been recieved.  Thanks to Gadgetoid, GlennHoran, and markmcgookin for their suggestions.  This guide was written for and tested on `pimoroni-pico v0.0.5 Alpha`, all functions are present and working at the time of writing.  The guide is also written on the assumption that you're using the Raspberry Pi Pico board, but should be applicable to other boards as well.
 
 # Table of Contents
 
