@@ -5,11 +5,9 @@
 
 Pimoroni have released a whole raft of accessories for the Raspberry Pi Pico, with the RP2040 chip at its heart.  Unfortunately, they seem to have released so many accessories that the documentation is currently a bit behind.  This document contains a description of what I've been able to figure out for using the MicroPython module provided [by Pimoroni here](https://github.com/pimoroni/pimoroni-pico) for their Display Pack.
 
-Current state:  
+Thanks to Julian Kussman (jkuss) for their contribution on the `flip` function and some typo fixes.
 
-21-04-22:Unfortunately work and life have really gotten in the way of hobby things, so this repo is probably at least a year out of date. Maybe someday I'll get the time to update it, but no promises. I hope you find it useful anyway. 
-
-The first draft is done, and some feedback has been recieved.  Thanks to Gadgetoid, GlennHoran, and markmcgookin for their suggestions.  This guide was written for and tested on `pimoroni-pico v0.0.5 Alpha`, all functions are present and working at the time of writing.  The guide is also written on the assumption that you're using the Raspberry Pi Pico board, but should be applicable to other boards as well.
+Current state (23-04-22): Unfortunately work and life have really gotten in the way of hobby things, so this repo is probably at least a year out of date. Maybe someday I'll get the time to update it, but no promises. I hope you find it useful anyway. I've quickly tested all of the functions in this documentation on Pimoroni's `pimoroni-pico` firmware version 1.18.6, using a Pico-Lipo (16 MB), but this guide should work for any Pi Pico-style board.  Thanks to Gadgetoid, GlennHoran, and markmcgookin for their suggestions.
 
 # Table of Contents
 
@@ -39,6 +37,7 @@ The first draft is done, and some feedback has been recieved.  Thanks to Gadgeto
         - [Drawing MOAR pixels, but in a circle: display.circle(x,y,radius)](#drawing-moar-pixels-but-in-a-circle-displaycirclexyradius)
         - [Drawing EVEN MOAR pixels, but as letters: display.character(character, x, y)](#drawing-even-moar-pixels-but-as-letters-displaycharactercharacter-x-y)
         - [Drawing strings of text: display.text(string,x,y,wrapping)](#drawing-strings-of-text-displaytextstringxywrapping)
+        - [Flipping the screen: display.flip()](#flipping-the-screen-displayflip)
         - [Advanced drawing: display.set_clip(x,y,width,height) and display.remove_clip()](#advanced-drawing-displayset_clipxywidthheight-and-displayremove_clip)
 
 # Quickstart script
@@ -587,6 +586,7 @@ display.update()
 </details>
 
 ### Flipping the screen: `display.flip()`
+
 
 This function will rotate everything on the screen 180º (upside down). The display will stay in that state until you call `display.flip()` again.
 
