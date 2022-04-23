@@ -305,9 +305,9 @@ The way to think about using the Pico Display Pack is that you're drawing on the
 You could use `display.set_pen` to draw everything you want to do on the screen, changing colour as required.  If you're using a lot of different colours though it could get confusing to remember exactly _which_ shade of colour each combination of `red`, `green`, and `blue` values refers to, and so there's a shortcut for this.  The `display.create_pen(red,green,blue)` function is used for this, for example by using the line of code: `penName = display.create_pen(red,green,blue)`. In this example `penName` is the shortcut name for this colour, so the next time you need it you can use the command `display.set_pen(penName)` instead of trying to remember the exact `red`,`green`, and `blue` values for the colour you want.  This makes it much easier to switch between many pen colours.
 
 ```python
-darkBlue = display.create_pen(0, 0, 153)    # A dark blue
-deepBlue = display.create(0, 51, 204)       # A deeper blue
-paleBlue = display.create(51, 153, 255)     # A paler blue
+darkBlue = display.create_pen(0, 0, 153)        # A dark blue
+deepBlue = display.create_pen(0, 51, 204)       # A deeper blue
+paleBlue = display.create_pen(51, 153, 255)     # A paler blue
 
 # Quickly switch between pen colours
 display.set_pen(deepBlue)
@@ -584,6 +584,40 @@ display.text("Hello world!", 5, 50, 240,4)
 display.update()
 # You should now see "Hello world!" on the screen in two different sizes. 
 ````
+</details>
+
+### Flipping the screen: `display.flip()`
+
+This function will rotate everything on the screen 180º (upside down). The display will stay in that state until you call `display.flip()` again.
+
+<details>
+    <summary>This example displays the classic "Hello world!" example upside down</summary>
+
+```python
+    #Standard boilerplate code for using the Display Pack
+    import picodisplay as display
+    width = display.get_width()
+    height = display.get_height()
+    display_buffer = bytearray(width * height * 2)
+    display.init(display_buffer)
+
+    # Set the backlight to 50%
+    display.set_backlight(0.5)
+
+    # Use a red pen:
+    display.set_pen(255,0,0)
+
+    # Draw "Hello world!" on the screen 5 pixels in and down from the top left corner.
+    #The Wrap width of 200 is wider than the text, so the text won't wrap.
+    display.text("Hello world!", 5, 5, 200)
+    
+    # Flip the screen
+    display.flip()
+    
+    # Push the pixels to the screen:
+    display.update()
+    # You should now see "Hello world!" on the screen upside down (rotated 180º). 
+```
 </details>
 
 ### Advanced drawing: `display.set_clip(x,y,width,height)` and `display.remove_clip()`
