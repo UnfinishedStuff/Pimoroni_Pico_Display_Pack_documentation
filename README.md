@@ -2,6 +2,10 @@
 
 ![A Pico Display showing "Pimoroni display pack!"](/Display_pack.jpg)
 
+<h1> THIS REPO IS NOW DEPRECATED (03-09-22)</h1>
+PImoroni have updated their Pico firmware, and replaced several display-specific packages with their all-encompassing PicoGraphics module.  That means the code in this repo will likely no longer work.  You can find Pimoroni's PicoGraphics documentation here: https://github.com/pimoroni/pimoroni-pico/tree/main/micropython/modules/picographics
+
+<br><br>
 
 Pimoroni have released a whole raft of accessories for the Raspberry Pi Pico, with the RP2040 chip at its heart.  Unfortunately, they seem to have released so many accessories that the documentation is currently a bit behind.  This document contains a description of what I've been able to figure out for using the MicroPython module provided [by Pimoroni here](https://github.com/pimoroni/pimoroni-pico) for their Display Pack.
 
